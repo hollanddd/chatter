@@ -1,0 +1,53 @@
+<html>
+  <body>
+    <h1>Here be the chatter</h1>
+    
+    <!-- fom for msg-input -->
+    <label for="msg-input">Broadcast message</label>
+    <input id="msg-input" name="msg-input" type="text" size="30" />
+    <p>press enter to submit your message</p>
+    <!-- end form msg-input -->
+    
+    <ul id="broadcast-msg"></ul>
+
+    <!-- Include javascripts -->
+    <script src="socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script>
+      // establish the connection
+      var socket = io.connect("http://127.0.0.1:1337");
+
+      // push message data to ul tag when received
+      socket.on('broadcast_msg', function(data){
+        console.log('Broadcasted msg received:', data);
+        var msg = '<li>' + data + '</li>';
+
+        //jquery selection of ul and subsequent append of message
+        $('#broadcast-msg').prepend(msg);
+        var number_of_list_items = $('li').length;
+        //TODO: clear li items after exceeding threshold 
+        if(number_of_list_items > 5){
+          $('li:lastchld', this).remove();
+        }
+      });
+
+      // create a new socket connection
+      socket.on('connect', function() {
+        // prompt user for nickname
+        socket.emit('set nick', prompt('What is your nick?'));
+        
+        //change msg-input to reflect sent messages
+        $('#msg-input').change(function(){
+          var txt = $(this).val();
+          $(this).val('');
+          socket.emit('emit msg', txt, function(data){
+            console.log('Emit broadcast msg:', data);
+          });
+        });//end msg-input
+
+
+      
+      });
+    </script>
+  </body>
+</html>
