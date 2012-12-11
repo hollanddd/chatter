@@ -18,7 +18,6 @@ describe("Chat Server", function(){
     client.on('broadcast_msg', function(user_nick){
       user_nick.should.be.a('string');
       user_nick.should.equal(user_one.nick + ' is now connected.');
-      client.disconnect();
     });
     done();
   });//end should not blow up
@@ -38,7 +37,7 @@ describe("Chat Server", function(){
 
       client_two.on('nick', function(nick){
         nick.should.equal(user_two.nick);
-        client_one.disconnect();
+        client_two.disconnect();
       });
     });
     
@@ -49,9 +48,9 @@ describe("Chat Server", function(){
       if(numUsers === 2){
         nick.should.equal(user_two.nick + " has joined.");
         client_one.disconnect();
-        done();
       }
     });
+    done();
   });//end should broadcast new user
 
   it('should broadcast a message to all users', function(done){
@@ -70,6 +69,7 @@ describe("Chat Server", function(){
         });
       });
     });
+    done();
   });//end should broadcast a message to all users
 
 });//end describe chat server
