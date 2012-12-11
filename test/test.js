@@ -1,3 +1,4 @@
+var Browser = require('zombie');
 var should = require('should');
 var io = require('socket.io-client');
 
@@ -70,6 +71,25 @@ describe("Chat Server", function(){
       });
     });
     done();
-  });//end should broadcast a message to all users
+  });//end should broadcast a message to all usersi
 
+  it('should add list items to unordered list in view', function(done){
+    var client_one = io.connect(socketURL, options);
+    var msg = 'zombie nation'
+
+    client_one.on('connect', function(data){
+      client_one.emit('set nick', user_one);
+
+      var client_two = io.connect(socketURL, options);
+      client_two.on('connect', function(data){
+        client_two.emit('set nick', user_two);
+        client_two.emit('emit msg', msg);
+        browser = new Browser
+        browser.visit(socketURL, function(){
+          browser.text('li:first').equals(user_two.nick + ':' + msg + ' must fail');
+        });
+      });
+      done();
+    });
+  });//client side test: end add list items to unordered list
 });//end describe chat server
