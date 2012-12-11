@@ -13,13 +13,14 @@ describe("Chat Server", function(){
   it('Should broadcast a new user when they connect', function(done){
     var client = io.connect(socketURL, options);
     client.on('connect', function(data){
-      client.emit('set nick', user1.nick);
-      client.get('nick', user1.nick).should.be.a('string');
+      client.emit('set nick', user1);
     });
 
     client.on('broadcast_msg', function(user_nick){
       user_nick.should.be.a('string');
+      user_nick.should.equal(user1.nick + ' is now connected.');
     });
+    done();
   });//end should not blow up
   
   it('Should broadcast new users to all users', function(done){
@@ -51,6 +52,7 @@ describe("Chat Server", function(){
         done();
       }
     });
+    done();
   });//end should broadcast new user 
 
 });//end describe chat server
